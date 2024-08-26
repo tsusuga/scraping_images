@@ -2,6 +2,7 @@ import os
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse
+import pandas as pd
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -10,19 +11,26 @@ root_url = os.getenv('ROOT_URL')
 urls_to_crawl = [root_url]
 crawled_urls = set()
 base_domain = urlparse(urls_to_crawl[0]).netloc
-all_images = set()
+all_found_images = []
+
+with open('image_names_jpg.txt', 'r') as image_names_file:
+# 検索する画像名のリスト
+  image_names_to_search = [name.strip() for name in image_names_file.readlines()]
 
 def get_soup(url):
     res = requests.get(url)
+    # print(res.text)
     soup = BeautifulSoup(res.text, 'html.parser')
     return soup
 
-def get_images(soup, base_url):
-    images = set()
+def search_images(soup, base_url, image_names):
+    found_images = []
     for img_tag in soup.find_all('img'):
-        image = urljoin(base_url, img_tag['src'])
-        images.add(image)
-    return images
+        img_url = urljoin(base_url, img_tag['src'])
+        img_name = img_url.split('/')[-1]
+        if img_name in image_names:
+            found_images.append((img_name, img_url, base_url))
+    return found_images
 
 def is_relative(url):
     return urlparse(url).netloc == ''
@@ -33,7 +41,6 @@ def is_external(url, base_domain):
 
 while urls_to_crawl:
     url = urls_to_crawl.pop(0)
-    # print(url) #https://www.j-com.co.jp
     if url in crawled_urls and is_external(url, base_domain):
         continue
 
@@ -49,9 +56,11 @@ while urls_to_crawl:
 
     crawled_urls.add(url)
 
-    images = get_images(soup, url)
-    all_images.update(images)
+    images = search_images(soup, url, image_names_to_search)
+    all_found_images.extend(images)
 
+# 結果をExcelに出力
+df = pd.DataFrame(all_found_images, columns=['Image Name', 'Image URL', 'Page URL'])
+df.to_excel('found_images.xlsx', index=False)
 
-for image in all_images:
-    print(image)
+print("検索結果がfound_images.xlsxに保存されました。")
