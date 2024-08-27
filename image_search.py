@@ -4,6 +4,9 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse
 import pandas as pd
 from dotenv import load_dotenv
+import time
+
+start_time = time.time()
 
 load_dotenv()
 root_url = os.getenv('ROOT_URL')
@@ -20,7 +23,7 @@ with open('image_names_jpg.txt', 'r') as image_names_file:
 def get_soup(url):
     res = requests.get(url)
     # print(res.text)
-    soup = BeautifulSoup(res.text, 'html.parser')
+    soup = BeautifulSoup(res.text, 'html5lib')
     return soup
 
 def search_images(soup, base_url, image_names):
@@ -63,4 +66,6 @@ while urls_to_crawl:
 df = pd.DataFrame(all_found_images, columns=['Image Name', 'Image URL', 'Page URL'])
 df.to_excel('found_images.xlsx', index=False)
 
+end_time = time.time()
 print("検索結果がfound_images.xlsxに保存されました。")
+print(f"処理時間: {end_time - start_time:.2f}秒")
