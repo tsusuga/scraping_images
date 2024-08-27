@@ -56,6 +56,9 @@ def is_fragment_with(url):
 def is_pdf(url):
     return url.lower().endswith('.pdf')
 
+def is_https(url):
+    return urlparse(url).scheme == 'https'
+
 while urls_to_crawl:
     url = urls_to_crawl.pop(0)
     if url in crawled_urls or is_external(url, base_domain) or is_fragment_with(url):
@@ -63,12 +66,15 @@ while urls_to_crawl:
 
     soup = get_soup(url)
 
+    if soup is None:
+        continue
+
     links = soup.find_all('a')
     for link in links:
         href = link.get('href')
         if href:
             full_url = urljoin(url, href) if is_relative(href) else href
-            if not is_external(full_url, base_domain) and full_url not in crawled_urls and not is_pdf(full_url):
+            if is_https(full_url) and not is_external(full_url, base_domain) and full_url not in crawled_urls and not is_pdf(full_url):
                 urls_to_crawl.append(full_url)
     print(f"検索中: {url}")
     crawled_urls.add(url)
@@ -79,9 +85,9 @@ while urls_to_crawl:
     time.sleep(1)
 
 # 結果をExcelに出力
-df = pd.DataFrame(all_found_images, columns=['Image Name', 'Image URL', 'Page URL'])
-df.to_excel('found_images.xlsx', index=False)
-
 end_time = time.time()
+df = pd.DataFrame(all_found_images, columns=['Image Name', 'Image URL', 'Page URL'])
+df.to_excel(f'found_images_{time.strftime("%Y%m%d%H%M%S")}.xlsx', index=False)
+
 print("検索結果がfound_images.xlsxに保存されました。")
 print(f"処理時間: {end_time - start_time:.2f}秒")
