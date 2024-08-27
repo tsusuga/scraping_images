@@ -86,8 +86,9 @@ while urls_to_crawl:
 
 # 結果をExcelに出力
 end_time = time.time()
+output_path = f'found_images_{time.strftime("%Y%m%d%H%M")}.xlsx'
 df = pd.DataFrame(all_found_images, columns=['Image Name', 'Image URL', 'Page URL'])
-df.to_excel(f'found_images_{time.strftime("%Y%m%d%H%M%S")}.xlsx', index=False)
+df.to_excel(output_path, index=False)
 
-print("検索結果がfound_images.xlsxに保存されました。")
+print(f"検索結果が{output_path}に保存されました。")
 print(f"処理時間: {end_time - start_time:.2f}秒")
