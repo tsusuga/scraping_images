@@ -68,6 +68,9 @@ def is_pdf(url):
 def is_https(url):
     return urlparse(url).scheme == 'https'
 
+def is_html(url):
+    return url.lower().endswith('.html')
+
 while urls_to_crawl:
     url = urls_to_crawl.pop(0)
     if url in crawled_urls or is_external(url, base_domain) or is_fragment_with(url):
@@ -83,7 +86,7 @@ while urls_to_crawl:
         href = link.get('href')
         if href:
             full_url = urljoin(url, href) if is_relative(href) else href
-            if is_https(full_url) and not is_external(full_url, base_domain) and full_url not in crawled_urls and not is_pdf(full_url):
+            if is_https(full_url) and not is_external(full_url, base_domain) and full_url not in crawled_urls and is_html(full_url):
                 urls_to_crawl.append(full_url)
     print(f"検索中: {url}")
     crawled_urls.add(url)
