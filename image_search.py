@@ -60,7 +60,7 @@ while urls_to_crawl:
             full_url = urljoin(url, href) if is_relative(href) else href
             if not is_external(full_url, base_domain) and full_url not in crawled_urls:
                 urls_to_crawl.append(full_url)
-
+    print(f"検索中: {url}")
     crawled_urls.add(url)
 
     images = search_images(soup, url, image_names_to_search)
