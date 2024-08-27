@@ -25,7 +25,7 @@ crawled_urls = set()
 base_domain = urlparse(urls_to_crawl[0]).netloc
 all_found_images = []
 
-with open('image_names_jpg.txt', 'r') as image_names_file:
+with open('image_names.txt', 'r') as image_names_file:
 # 検索する画像名のリスト
   image_names_to_search = [name.strip() for name in image_names_file.readlines()]
 
