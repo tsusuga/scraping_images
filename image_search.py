@@ -10,16 +10,16 @@ start_time = time.time()
 
 load_dotenv()
 
-def calculate_news_index(start_year=2000, end_year=2024):
-    additional_urls = []
+def generate_news_index_urls(start_year=2000, end_year=2024):
+    urls = []
     index = start_year
     while index <= end_year:
-        additional_urls.append(f"https://www.j-com.co.jp/news/index{index}.html")
+        urls.append(f"https://www.j-com.co.jp/news/index{index}.html")
         index += 1
-    return additional_urls
+    return urls
 
 root_url = os.getenv('ROOT_URL')
-urls_to_crawl = [root_url] + calculate_news_index()
+urls_to_crawl = [root_url] + generate_news_index_urls()
 
 crawled_urls = set()
 base_domain = urlparse(urls_to_crawl[0]).netloc
