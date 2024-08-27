@@ -9,16 +9,16 @@ import time
 start_time = time.time()
 
 load_dotenv()
+root_url = os.getenv('ROOT_URL')
 
 def generate_news_index_urls(start_year=2000, end_year=2024):
     urls = []
     index = start_year
     while index <= end_year:
-        urls.append(f"https://www.j-com.co.jp/news/index{index}.html")
+        urls.append(f"{root_url}/news/index{index}.html")
         index += 1
     return urls
 
-root_url = os.getenv('ROOT_URL')
 urls_to_crawl = [root_url] + generate_news_index_urls()
 
 crawled_urls = set()
