@@ -53,6 +53,9 @@ def format_url(url):
 def is_fragment_with(url):
     return '#' in url
 
+def is_pdf(url):
+    return url.lower().endswith('.pdf')
+
 while urls_to_crawl:
     url = urls_to_crawl.pop(0)
     if url in crawled_urls or is_external(url, base_domain) or is_fragment_with(url):
@@ -65,7 +68,7 @@ while urls_to_crawl:
         href = link.get('href')
         if href:
             full_url = urljoin(url, href) if is_relative(href) else href
-            if not is_external(full_url, base_domain) and full_url not in crawled_urls:
+            if not is_external(full_url, base_domain) and full_url not in crawled_urls and not is_pdf(full_url):
                 urls_to_crawl.append(full_url)
     print(f"検索中: {url}")
     crawled_urls.add(url)
