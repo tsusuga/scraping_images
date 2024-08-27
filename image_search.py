@@ -46,9 +46,16 @@ def is_external(url, base_domain):
     parsed_url = urlparse(url)
     return parsed_url.netloc and parsed_url.netloc != base_domain
 
+def format_url(url):
+    parsed_url = urlparse(url)
+    return parsed_url.scheme + '://' + parsed_url.netloc + parsed_url.path
+
+def is_fragment_with(url):
+    return '#' in url
+
 while urls_to_crawl:
     url = urls_to_crawl.pop(0)
-    if url in crawled_urls and is_external(url, base_domain):
+    if url in crawled_urls or is_external(url, base_domain) or is_fragment_with(url):
         continue
 
     soup = get_soup(url)
