@@ -62,6 +62,8 @@ while urls_to_crawl:
     images = search_images(soup, url, image_names_to_search)
     all_found_images.extend(images)
 
+    time.sleep(1)
+
 # 結果をExcelに出力
 df = pd.DataFrame(all_found_images, columns=['Image Name', 'Image URL', 'Page URL'])
 df.to_excel('found_images.xlsx', index=False)
