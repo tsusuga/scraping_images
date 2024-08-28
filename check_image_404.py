@@ -1,0 +1,29 @@
+import os
+import requests
+from dotenv import load_dotenv
+import time
+
+start_time = time.time()
+
+load_dotenv()
+root_url = os.getenv('ROOT_URL')
+
+def request_images(urls):
+  response_statuses = []
+  for url in urls:
+    res = requests.get(url)
+    response_statuses.append(f'{res.status_code}: {url}')
+    print(f'{res.status_code}: {url}')
+  return response_statuses
+
+with open('image_urls.txt', 'r') as image_urls_file:
+  urls = [url.strip() for url in image_urls_file.readlines()]
+
+response_statuses = request_images(urls)
+
+output_path = f'image_request_results_{time.strftime("%Y%m%d%H%M")}.txt'
+with open(output_path, 'w') as image_request_results_file:
+  image_request_results_file.write('\n'.join(response_statuses))
+
+end_time = time.time()
+print(f'実行時間: {end_time - start_time:.2f}秒')
