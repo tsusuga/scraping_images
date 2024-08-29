@@ -8,18 +8,19 @@ start_time = time.time()
 load_dotenv()
 root_url = os.getenv('ROOT_URL')
 
-def request_images(urls):
+def request_images(paths):
   response_statuses = []
-  for url in urls:
-    res = requests.get(url)
-    response_statuses.append(f'{res.status_code}: {url}')
-    print(f'{res.status_code}: {url}')
+  for path in paths:
+    combined_url = root_url + path
+    res = requests.get(combined_url)
+    response_statuses.append(f'{res.status_code}: {path}')
+    print(f'{res.status_code}: {combined_url}')
   return response_statuses
 
 with open('image_urls.txt', 'r') as image_urls_file:
-  urls = [url.strip() for url in image_urls_file.readlines()]
+  paths = [url.strip() for url in image_urls_file.readlines()]
 
-response_statuses = request_images(urls)
+response_statuses = request_images(paths)
 
 output_path = f'image_request_results_{time.strftime("%Y%m%d%H%M")}.txt'
 with open(output_path, 'w') as image_request_results_file:
