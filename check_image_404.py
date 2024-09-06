@@ -13,11 +13,13 @@ def request_images(paths):
   for path in paths:
     combined_url = root_url + path
     res = requests.get(combined_url)
-    response_statuses.append(f'{res.status_code}: {path}')
+    response_statuses.append(f'{res.status_code}: {combined_url}')
     print(f'{res.status_code}: {combined_url}')
   return response_statuses
 
-with open('image_urls.txt', 'r') as image_urls_file:
+source_file = 'image_urls_bm.txt'
+
+with open(source_file, 'r') as image_urls_file:
   paths = [url.strip() for url in image_urls_file.readlines()]
 
 response_statuses = request_images(paths)
